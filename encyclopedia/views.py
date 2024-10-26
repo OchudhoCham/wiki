@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 import markdown2
 from django.urls import reverse 
 from . import util
+from django import forms
+
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -30,4 +32,24 @@ def search(request):
         return render(request, "encyclopedia/search_results.html", {
             "entries": entries,
             "query": query
+        })
+
+class NewPageForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(widget=forms.Textarea, label="Content")
+
+def new_page(request):
+    if request.method =="POST":
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            if util.get_entry(title):
+                return render(request, "encyclopedia/error.html", {
+                    "message": "An entry with this title already exists."
+                })
+            util.save_entry(title, content)
+            return redirect("entry", title=title)
+        return redirect(request, "encyclopedia/new_page.html", {
+            "form": NewPageForm()
         })
