@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 import markdown2
 from django.urls import reverse 
@@ -52,4 +52,16 @@ def new_page(request):
             return redirect("entry", title=title)
         return redirect(request, "encyclopedia/new_page.html", {
             "form": NewPageForm()
+        })
+
+def edit_page(request, title):
+    content = util.get_entry(title)
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            util.save_entry(title, form.cleaned_data["content"])
+            return redirect("entry", title=title)
+        return render(request, "encyclopedia/edit_page.html", {
+            "form": NewPageForm(initial={'title': title, 'content': content}),
+            "title": title
         })
