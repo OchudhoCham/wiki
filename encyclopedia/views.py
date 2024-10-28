@@ -17,7 +17,7 @@ def entry(request, title):
     content = util.get_entry(title)
     if content is None:
         return HttpResponse("Entry Not Found.")
-    html_content = markdown2.markdown(content)
+    html_content = markdown2.Markdown(content)
     return render(request, "encyclopedia/entry.html", {
         "title": title,
         "content": html_content
