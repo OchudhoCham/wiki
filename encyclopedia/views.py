@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-import markdown2
 import random
-from django.urls import reverse 
+import markdown2
+from django.urls import reverse
 from . import util
 from django import forms
 
@@ -29,9 +29,9 @@ def search(request):
         return entry(request, query) #Redirect to entry page if found
     else:
         #Show search results if entry is not found
-        entries = [entry for entry in util.list_entries() if query.lower() in entry.lower()]
+        matches = [entry for entry in util.list_entries() if query.lower() in entry.lower()]
         return render(request, "encyclopedia/search_results.html", {
-            "entries": entries,
+            "matches": matches,
             "query": query
         })
 

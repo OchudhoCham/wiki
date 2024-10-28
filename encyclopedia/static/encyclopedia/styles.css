@@ -3,6 +3,10 @@ body {
     background-color: white;
 }
 
+.img {
+    width:20px;
+    height: 20px;
+}
 code {
     white-space: pre;
 }
