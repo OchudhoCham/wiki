@@ -15,7 +15,9 @@ def index(request):
 def entry(request, title):
     content = util.get_entry(title)
     if content is None:
-        return HttpResponse("Entry Not Found.")
+        return render(request, "encyclopedia/error.html", {
+            "message": "Entry Not Found."
+        })
     html_content = markdown2.markdown(content)
     return render(request, "encyclopedia/entry.html", {
         "title": title,
@@ -49,8 +51,8 @@ def new_page(request):
                     "message": "An entry with this title already exists."
                 })
             util.save_entry(title, content)
-            return redirect("entry", title=title)
-        return redirect(request, "encyclopedia/new_page.html", {
+            return HttpResponseRedirect(reverse("entry", args=[title]))
+        return render(request, "encyclopedia/new_page.html", {
             "form": NewPageForm()
         })
 
