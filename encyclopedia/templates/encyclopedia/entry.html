@@ -6,3 +6,25 @@
 <button class="btn btn-primary">Edit</button>
 <button class="btn btn-danger">Delete</button>
 {% endblock %}
+<script>
+    document.querySelector('.btn-primary').addEventListener('click', function() {
+        window.location.href = "{% url 'edit_entry' title %}";
+    });
+
+    document.querySelector('.btn-danger').addEventListener('click', function() {
+        if (confirm('Are you sure you want to delete this entry?')) {
+            fetch("{% url 'delete_entry' title %}", {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = "{% url 'index' %}";
+                } else {
+                    alert('Failed to delete the entry.');
+                }
+            });
+        }
+    });
+</script>
